@@ -1,4 +1,4 @@
-package com.alkemy.disney.alkemylab.entidad;
+package com.alkemy.disney.alkemylab.entity;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 @Table(name = "character")
 @Data
-public class Character implements Serializable {
+public class CharacterEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,5 +19,5 @@ public class Character implements Serializable {
     private int weight;
     private String background;
     @ManyToMany(mappedBy = "characters", cascade = CascadeType.ALL)
-    private List<Movie> movies;
+    private List<MovieEntity> movieEntities;
 }

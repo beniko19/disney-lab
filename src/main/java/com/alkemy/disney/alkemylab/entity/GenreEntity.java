@@ -1,4 +1,4 @@
-package com.alkemy.disney.alkemylab.entidad;
+package com.alkemy.disney.alkemylab.entity;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import java.util.Set;
 @Entity
 @Table(name = "genre")
 @Data
-public class Genre implements Serializable {
+public class GenreEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +27,6 @@ public class Genre implements Serializable {
             joinColumns = @JoinColumn(name = "genre_id"),
             inverseJoinColumns = @JoinColumn(name = "movie_id")
     )
-    private Set<Movie> movies;
+    private Set<MovieEntity> movieEntities;
 
 }
