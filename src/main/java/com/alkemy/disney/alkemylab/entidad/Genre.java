@@ -4,19 +4,18 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Set;
 
 @Entity
-@Table(name = "genero")
+@Table(name = "genre")
 @Data
-public class Genero implements Serializable {
+public class Genre implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nombre;
-    private String imagen;
+    private String name;
+    private String image;
 
     @ManyToMany(
             cascade = {
@@ -24,10 +23,10 @@ public class Genero implements Serializable {
                     CascadeType.MERGE
             })
     @JoinTable(
-            name = "genero_pelicula",
-            joinColumns = @JoinColumn(name = "genero_id"),
-            inverseJoinColumns = @JoinColumn(name = "pelicula_id")
+            name = "genre_movie",
+            joinColumns = @JoinColumn(name = "genre_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id")
     )
-    private Set<Pelicula> peliculas;
+    private Set<Movie> movies;
 
 }

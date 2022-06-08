@@ -10,14 +10,14 @@ import java.util.Set;
 
 @Entity
 @Data
-@Table(name = "pelicula")
-public class Pelicula implements Serializable {
+@Table(name = "movie")
+public class Movie implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String titulo;
-    private int calificacion;
+    private String tittle;
+    private int rating;
     @ManyToMany(
             cascade = {
                     CascadeType.PERSIST,
@@ -25,12 +25,12 @@ public class Pelicula implements Serializable {
             })
     @JoinTable(
             name = "pelicula_personaje",
-            joinColumns = @JoinColumn(name = "pelicula_id"),
-            inverseJoinColumns = @JoinColumn(name = "personaje_id")
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "character_id")
     )
-    private Set<Personaje> personajes;
-    private String imagen;
-    @ManyToMany(mappedBy = "peliculas", cascade = CascadeType.ALL)
-    private List<Genero> generos = new ArrayList<>();
+    private Set<Character> characters;
+    private String image;
+    @ManyToMany(mappedBy = "movies", cascade = CascadeType.ALL)
+    private List<Genre> genres = new ArrayList<>();
 
 }
