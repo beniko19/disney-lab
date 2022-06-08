@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Set;
 
 @Entity
 @Table(name = "genero")
@@ -16,5 +17,17 @@ public class Genero implements Serializable {
     private Long id;
     private String nombre;
     private String imagen;
-    private String peliculas;
+
+    @ManyToMany(
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable(
+            name = "genero_pelicula",
+            joinColumns = @JoinColumn(name = "genero_id"),
+            inverseJoinColumns = @JoinColumn(name = "pelicula_id")
+    )
+    private Set<Pelicula> peliculas;
+
 }
