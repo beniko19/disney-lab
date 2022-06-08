@@ -17,7 +17,7 @@ public class MovieController {
     @Autowired
     private MovieService movieService;
 
-    @GetMapping
+    @GetMapping("getAll")
     public ResponseEntity<List<MovieDTO>> getAll() {
         List<MovieDTO> movies = movieService.getAllMovies();
         return ResponseEntity.ok().body(movies);

@@ -21,6 +21,7 @@ public class MovieEntity implements Serializable {
     private String image;
     private String tittle;
     @Column(name = "creation_date")
+
     @DateTimeFormat(pattern = "yyyy/MM/dd")
     private LocalDate creationDate;
     private int rating;
@@ -30,13 +31,12 @@ public class MovieEntity implements Serializable {
                     CascadeType.MERGE
             })
     @JoinTable(
-            name = "pelicula_personaje",
+            name = "movie_character",
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "character_id")
     )
     private Set<CharacterEntity> characters;
 
     @ManyToMany(mappedBy = "movieEntities", cascade = CascadeType.ALL)
-    private List<GenreEntity> genreEntities = new ArrayList<>();
-
+    private List<GenreEntity> genres = new ArrayList<>();
 }
