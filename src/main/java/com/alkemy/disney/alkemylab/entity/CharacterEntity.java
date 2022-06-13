@@ -19,5 +19,6 @@ public class CharacterEntity implements Serializable {
     private int weight;
     private String background;
     @ManyToMany(mappedBy = "characters", cascade = CascadeType.ALL)
-    private List<MovieEntity> movieEntities;
+    private List<MovieEntity> movies;
+
 }

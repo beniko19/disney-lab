@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AlkemyLabApplication {
+public class DisneyServiceStartUp {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AlkemyLabApplication.class, args);
+		SpringApplication.run(DisneyServiceStartUp.class, args);
 	}
 
 }

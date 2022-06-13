@@ -1,7 +1,9 @@
 package com.alkemy.disney.alkemylab.mapper;
 
 import com.alkemy.disney.alkemylab.dto.CharacterDTO;
+import com.alkemy.disney.alkemylab.dto.MovieDTO;
 import com.alkemy.disney.alkemylab.entity.CharacterEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Component
 public class CharacterMapper {
+    @Autowired
+    private MovieMapper movieMapper;
 
     public CharacterEntity characterDTO2Entity(CharacterDTO dto) {
         CharacterEntity characterEntity = new CharacterEntity();
@@ -17,7 +21,7 @@ public class CharacterMapper {
         characterEntity.setAge(dto.getAge());
         characterEntity.setWeight(dto.getWeight());
         characterEntity.setBackground(dto.getBackground());
-        characterEntity.setMovieEntities(dto.getMovieEntities());
+        characterEntity.setMovies(dto.getMovies());
         return characterEntity;
     }
 
@@ -29,11 +33,17 @@ public class CharacterMapper {
         dto.setAge(entity.getAge());
         dto.setWeight(entity.getWeight());
         dto.setBackground(entity.getBackground());
-        dto.setMovieEntities(entity.getMovieEntities());
+        dto.setMovies(entity.getMovies());
         return dto;
     }
 
     public List<CharacterDTO> characterEntity2DTOList(List<CharacterEntity> entities) {
+        List<CharacterDTO> dtos = new ArrayList<>();
+        entities.stream().forEach(entity -> dtos.add(characterEntity2DTO(entity)));
+        return dtos;
+    }
+
+    public List<CharacterDTO> characterEntitySet2DTOList(List<CharacterEntity> entities) {
         List<CharacterDTO> dtos = new ArrayList<>();
         entities.stream().forEach(entity -> dtos.add(characterEntity2DTO(entity)));
         return dtos;
