@@ -1,6 +1,6 @@
 package com.alkemy.disney.alkemylab.dto;
 
-import com.alkemy.disney.alkemylab.entity.MovieEntity;
+
 import lombok.Data;
 
 import java.util.List;
@@ -11,10 +11,10 @@ public class CharacterFiltersDTO {
     private String name;
     private Integer age;
     private Integer weight;
-    Set<Long> movies;
+    List<Long> movies;
     private String order;
 
-    public CharacterFiltersDTO(String name, Integer age, Integer weight, Set<Long> movies, String order) {
+    public CharacterFiltersDTO(String name, Integer age, Integer weight, List<Long> movies, String order) {
         this.name = name;
         this.age = age;
         this.weight = weight;

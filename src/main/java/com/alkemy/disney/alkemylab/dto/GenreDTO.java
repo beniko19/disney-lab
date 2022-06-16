@@ -10,5 +10,5 @@ public class GenreDTO {
     private Long id;
     private String name;
     private String image;
-    private Set<MovieEntity> movieEntities;
+    private Set<MovieEntity> movies;
 }

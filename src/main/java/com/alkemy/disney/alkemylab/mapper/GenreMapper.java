@@ -14,7 +14,6 @@ public class GenreMapper {
         GenreEntity genreEntity = new GenreEntity();
         genreEntity.setName(dto.getName());
         genreEntity.setImage(dto.getImage());
-        genreEntity.setMovieEntities(dto.getMovieEntities());
         return genreEntity;
     }
 
@@ -23,7 +22,6 @@ public class GenreMapper {
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setImage(entity.getImage());
-        dto.setMovieEntities(entity.getMovieEntities());
         return dto;
     }
 

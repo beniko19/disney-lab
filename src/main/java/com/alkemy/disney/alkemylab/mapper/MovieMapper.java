@@ -16,7 +16,6 @@ public class MovieMapper {
         movieEntity.setTittle(dto.getTittle());
         movieEntity.setCreationDate(dto.getCreationDate());
         movieEntity.setRating(dto.getRating());
-        movieEntity.setCharacters(dto.getCharacters());
         return movieEntity;
     }
 
@@ -27,7 +26,6 @@ public class MovieMapper {
         dto.setTittle(entity.getTittle());
         dto.setCreationDate(entity.getCreationDate());
         dto.setRating(entity.getRating());
-        dto.setCharacters(entity.getCharacters());
         return dto;
     }
 

@@ -36,7 +36,7 @@ public class CharacterController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer age,
             @RequestParam(required = false) Integer weight,
-            @RequestParam(required = false) Set<Long> movies,
+            @RequestParam(required = false) List<Long> movies,
             @RequestParam(required = false) String order
     ) {
         List<CharacterDTO> characters = characterService.getByFilters(name, age, weight, movies, order);
