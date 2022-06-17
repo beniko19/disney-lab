@@ -13,5 +13,5 @@ public class CharacterDTO {
     private int age;
     private int weight;
     private String background;
-    private List<MovieEntity> movies;
+    private List<MovieDTO> movies;
 }

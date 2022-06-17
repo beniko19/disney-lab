@@ -1,6 +1,9 @@
 package com.alkemy.disney.alkemylab.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -13,16 +16,18 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "movie")
-public class MovieEntity implements Serializable {
+@SQLDelete(sql = "UPDATE movie SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 
+public class MovieEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String image;
     private String tittle;
-
     @Column(name = "creation_date")
     @DateTimeFormat(pattern = "yyyy/MM/dd")
     private LocalDate creationDate;
     private int rating;
+    private boolean deleted;
 }

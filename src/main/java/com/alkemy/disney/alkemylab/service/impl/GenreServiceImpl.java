@@ -45,5 +45,6 @@ public class GenreServiceImpl implements GenreService {
             genreMovie.setMovieId(movie.getId());
             genreMovieRepository.save(genreMovie);
         });
+        result.setMovies(genreMovieRepository.loadMovies2Genre(result));
     }
 }

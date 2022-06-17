@@ -44,4 +44,10 @@ public class MovieController {
         List<MovieDTO> movies = movieService.getByFilters(tittle, order, rating/*, characters, genres*/);
         return ResponseEntity.ok(movies);
     }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        movieService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
