@@ -34,4 +34,10 @@ public class MovieMapper {
         entities.stream().forEach(entity -> dtos.add(movieEntity2DTO(entity)));
         return dtos;
     }
+
+    public List<MovieEntity> movieDTO2EntityList(List<MovieDTO> dtos) {
+        List<MovieEntity> entities = new ArrayList<>();
+        dtos.stream().forEach(this::movieDTO2Entity);
+        return entities;
+    }
 }

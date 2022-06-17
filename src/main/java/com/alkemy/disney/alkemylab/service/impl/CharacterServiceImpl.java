@@ -62,6 +62,21 @@ public class CharacterServiceImpl implements CharacterService {
         characterRepository.delete(characterRepository.getReferenceById(id));
     }
 
+    @Override
+    public CharacterDTO update(Long id, CharacterDTO character) {
+        CharacterEntity entity = characterMapper.characterDTO2Entity(character);
+        characterRepository.getReferenceById(id).setImage(entity.getImage());
+        characterRepository.getReferenceById(id).setName(entity.getName());
+        characterRepository.getReferenceById(id).setWeight(entity.getWeight());
+        characterRepository.getReferenceById(id).setAge(entity.getAge());
+        characterRepository.getReferenceById(id).setBackground(entity.getBackground());
+        characterRepository.save(characterRepository.getReferenceById(id));
+        movieCharacterRepository.updateCharacterMovies(id, movieMapper.movieDTO2EntityList(character.getMovies()));
+        CharacterDTO result = characterMapper.characterEntity2DTO(characterRepository.getReferenceById(id));
+        loadMovies(result);
+        return result;
+    }
+
     private void addMovies(CharacterDTO dto, CharacterDTO result) {
         result.setMovies(dto.getMovies());
         dto.getMovies().forEach(movie -> {

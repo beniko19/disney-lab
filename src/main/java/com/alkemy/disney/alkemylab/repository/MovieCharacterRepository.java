@@ -25,6 +25,8 @@ public interface MovieCharacterRepository extends JpaRepository<MovieCharacterEn
     @Query("delete from MovieCharacterEntity mc where mc.movieId = :id")
     void deleteMovie(Long id);
 
+    void updateCharacterMovies(Long id, List<MovieEntity> movies);
+
     //TODO QUERY
     //List<CharacterEntity> loadCharacters2Movie(MovieDTO movie);
 }
