@@ -49,4 +49,10 @@ public class CharacterController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<CharacterDTO> update(@PathVariable Long id, @RequestBody CharacterDTO character) {
+        CharacterDTO result = characterService.update(id, character);
+        return ResponseEntity.ok().body(result);
+    }
+
 }
