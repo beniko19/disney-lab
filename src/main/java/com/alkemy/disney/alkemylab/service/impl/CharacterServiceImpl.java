@@ -5,15 +5,16 @@ import com.alkemy.disney.alkemylab.dto.CharacterFiltersDTO;
 import com.alkemy.disney.alkemylab.entity.CharacterEntity;
 import com.alkemy.disney.alkemylab.entity.MovieCharacterEntity;
 import com.alkemy.disney.alkemylab.mapper.CharacterMapper;
+import com.alkemy.disney.alkemylab.mapper.MovieMapper;
 import com.alkemy.disney.alkemylab.repository.CharacterRepository;
 import com.alkemy.disney.alkemylab.repository.MovieCharacterRepository;
 import com.alkemy.disney.alkemylab.repository.specification.CharacterSpecification;
 import com.alkemy.disney.alkemylab.service.CharacterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class CharacterServiceImpl implements CharacterService {
@@ -25,6 +26,8 @@ public class CharacterServiceImpl implements CharacterService {
     private MovieCharacterRepository movieCharacterRepository;
     @Autowired
     private CharacterSpecification characterSpecification;
+    @Autowired
+    private MovieMapper movieMapper;
 
     public CharacterDTO save(CharacterDTO dto) {
         CharacterEntity entity = characterMapper.characterDTO2Entity(dto);
@@ -37,7 +40,13 @@ public class CharacterServiceImpl implements CharacterService {
     public List<CharacterDTO> getAllCharacters() {
         List<CharacterEntity> entities = characterRepository.findAll();
         List<CharacterDTO> result = characterMapper.characterEntity2DTOList(entities);
+        result.forEach(this::loadMovies);
         return result;
+    }
+
+    private void loadMovies(CharacterDTO character) {
+        //character.setMovies(movieMapper.movieEntity2DTOList(
+          //      movieCharacterRepository.loadMovies2Character(character.getId())));
     }
 
     public List<CharacterDTO> getByFilters(String name, Integer age, Integer weight, List<Long> movies, String order) {
@@ -47,7 +56,14 @@ public class CharacterServiceImpl implements CharacterService {
         return dtos;
     }
 
+    @Transactional
+    public void delete(Long id) {
+        movieCharacterRepository.deleteCharacter(id);
+        characterRepository.delete(characterRepository.getReferenceById(id));
+    }
+
     private void addMovies(CharacterDTO dto, CharacterDTO result) {
+        result.setMovies(dto.getMovies());
         dto.getMovies().forEach(movie -> {
             MovieCharacterEntity movieCharacter = new MovieCharacterEntity();
             movieCharacter.setMovieId(movie.getId());

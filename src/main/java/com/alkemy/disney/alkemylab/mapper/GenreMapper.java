@@ -14,6 +14,7 @@ public class GenreMapper {
         GenreEntity genreEntity = new GenreEntity();
         genreEntity.setName(dto.getName());
         genreEntity.setImage(dto.getImage());
+        genreEntity.setDeleted(false);
         return genreEntity;
     }
 

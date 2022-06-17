@@ -15,6 +15,6 @@ public class MovieDTO {
     private String tittle;
     private LocalDate creationDate;
     private Integer rating;
-    private List<CharacterEntity> characters;
-    private List<GenreEntity> genres;
+    private List<CharacterDTO> characters;
+    private List<GenreDTO> genres;
 }

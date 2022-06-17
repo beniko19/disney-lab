@@ -1,14 +1,12 @@
 package com.alkemy.disney.alkemylab.dto;
 
-import com.alkemy.disney.alkemylab.entity.MovieEntity;
 import lombok.Data;
-
-import java.util.Set;
+import java.util.List;
 
 @Data
 public class GenreDTO {
     private Long id;
     private String name;
     private String image;
-    private Set<MovieEntity> movies;
+    private List<MovieDTO> movies;
 }
