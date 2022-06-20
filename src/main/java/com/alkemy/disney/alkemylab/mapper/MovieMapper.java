@@ -17,6 +17,7 @@ public class MovieMapper {
         movieEntity.setCreationDate(dto.getCreationDate());
         movieEntity.setRating(dto.getRating());
         return movieEntity;
+
     }
 
     public MovieDTO movieEntity2DTO(MovieEntity entity) {

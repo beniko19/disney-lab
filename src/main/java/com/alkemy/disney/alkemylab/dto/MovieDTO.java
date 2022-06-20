@@ -1,12 +1,9 @@
 package com.alkemy.disney.alkemylab.dto;
 
-import com.alkemy.disney.alkemylab.entity.CharacterEntity;
-import com.alkemy.disney.alkemylab.entity.GenreEntity;
 import lombok.Data;
-
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
+
 
 @Data
 public class MovieDTO {

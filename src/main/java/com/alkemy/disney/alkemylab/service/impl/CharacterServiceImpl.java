@@ -71,9 +71,9 @@ public class CharacterServiceImpl implements CharacterService {
         characterRepository.getReferenceById(id).setAge(entity.getAge());
         characterRepository.getReferenceById(id).setBackground(entity.getBackground());
         characterRepository.save(characterRepository.getReferenceById(id));
-        movieCharacterRepository.updateCharacterMovies(id, movieMapper.movieDTO2EntityList(character.getMovies()));
+        //movieCharacterRepository.updateCharacterMovies(id, movieMapper.movieDTO2EntityList(character.getMovies()));
         CharacterDTO result = characterMapper.characterEntity2DTO(characterRepository.getReferenceById(id));
-        loadMovies(result);
+        //TODO loadMovies(result);
         return result;
     }
 
