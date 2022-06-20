@@ -2,9 +2,7 @@ package com.alkemy.disney.alkemylab.service.impl;
 
 import com.alkemy.disney.alkemylab.dto.MovieDTO;
 import com.alkemy.disney.alkemylab.dto.MovieFiltersDTO;
-import com.alkemy.disney.alkemylab.entity.GenreMovieEntity;
-import com.alkemy.disney.alkemylab.entity.MovieCharacterEntity;
-import com.alkemy.disney.alkemylab.entity.MovieEntity;
+import com.alkemy.disney.alkemylab.entity.*;
 import com.alkemy.disney.alkemylab.mapper.CharacterMapper;
 import com.alkemy.disney.alkemylab.mapper.GenreMapper;
 import com.alkemy.disney.alkemylab.mapper.MovieMapper;
@@ -20,9 +18,10 @@ import java.util.List;
 
 @Service
 public class MovieServiceImpl implements MovieService {
-
     @Autowired
     private MovieMapper movieMapper;
+    @Autowired
+    private GenreMapper genreMapper;
     @Autowired
     private MovieRepository movieRepository;
     @Autowired
@@ -31,8 +30,6 @@ public class MovieServiceImpl implements MovieService {
     private GenreMovieRepository genreMovieRepository;
     @Autowired
     private MovieSpecification movieSpecification;
-    @Autowired
-    private GenreMapper genreMapper;
     @Autowired
     CharacterMapper characterMapper;
 
@@ -54,9 +51,13 @@ public class MovieServiceImpl implements MovieService {
     }
 
     private void loadCharactersAndGenres(MovieDTO movie) {
-      //  movie.setGenres(genreMapper.genreEntity2DTOList(genreMovieRepository.loadGenres2Movie(movie)));
-        //movie.setCharacters(characterMapper.characterEntity2DTOList(movieCharacterRepository.loadCharacters2Movie(movie)));
+        List<GenreEntity> genresMovieEntity = genreMovieRepository.loadGenres2Movie(movie.getId());
+        List<CharacterEntity> charactersMovieEntity = movieCharacterRepository.loadCharacters2Movie(movie.getId());
+        movie.setCharacters(characterMapper.characterEntity2DTOList(charactersMovieEntity));
+        movie.setGenres(genreMapper.genreEntity2DTOList(genresMovieEntity));
     }
+
+
 
     public List<MovieDTO> getByFilters(String tittle, String order, Integer rating/*, List<CharacterDTO> characters, List<GenreDTO> genres*/) {
         MovieFiltersDTO filtersDTO = new MovieFiltersDTO(tittle, rating, order);

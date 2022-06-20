@@ -17,6 +17,7 @@ public class MovieMapper {
         movieEntity.setCreationDate(dto.getCreationDate());
         movieEntity.setRating(dto.getRating());
         return movieEntity;
+
     }
 
     public MovieDTO movieEntity2DTO(MovieEntity entity) {
@@ -33,5 +34,11 @@ public class MovieMapper {
         List<MovieDTO> dtos = new ArrayList<>();
         entities.stream().forEach(entity -> dtos.add(movieEntity2DTO(entity)));
         return dtos;
+    }
+
+    public List<MovieEntity> movieDTO2EntityList(List<MovieDTO> dtos) {
+        List<MovieEntity> entities = new ArrayList<>();
+        dtos.stream().forEach(this::movieDTO2Entity);
+        return entities;
     }
 }
