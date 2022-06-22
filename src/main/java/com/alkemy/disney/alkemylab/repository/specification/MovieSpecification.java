@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 
 @Component
@@ -19,10 +20,12 @@ public class MovieSpecification {
                 predicates.add(criteriaBuilder.equal(root.get("tittle"), filtersDTO.getTittle()));
             if (filtersDTO.getRating() != null)
                 predicates.add(criteriaBuilder.equal(root.get("rating"),filtersDTO.getRating()));
-            /*if (!filtersDTO.getCharacters().isEmpty() && filtersDTO.getCharacters() != null)
-                criteriaBuilder.equal(root.get("characters"), filtersDTO.getCharacters());
-            if (!filtersDTO.getGenres().isEmpty() && filtersDTO.getGenres() != null)
-                criteriaBuilder.equal(root.get("genres"), filtersDTO.getGenres());*/
+
+            if (filtersDTO.getCharacterName() != null){
+
+            }
+
+
 
 
             // Remove duplicates

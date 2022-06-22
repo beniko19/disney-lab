@@ -37,9 +37,7 @@ public class MovieServiceImpl implements MovieService {
         MovieEntity entity = movieMapper.movieDTO2Entity(dto);
         MovieEntity entitySaved = movieRepository.save(entity);
         MovieDTO result = movieMapper.movieEntity2DTO(entitySaved);
-
-        //addGenresAndCharacters(dto, result);
-
+        addGenresAndCharacters(dto, result);
         return result;
     }
 
@@ -57,12 +55,12 @@ public class MovieServiceImpl implements MovieService {
         movie.setGenres(genreMapper.genreEntity2DTOList(genresMovieEntity));
     }
 
-
-
-    public List<MovieDTO> getByFilters(String tittle, String order, Integer rating/*, List<CharacterDTO> characters, List<GenreDTO> genres*/) {
-        MovieFiltersDTO filtersDTO = new MovieFiltersDTO(tittle, rating, order);
+    public List<MovieDTO> getByFilters(String tittle, String order, Integer rating, String characterName, String genreName) {
+        MovieFiltersDTO filtersDTO = new MovieFiltersDTO(tittle, rating, order, characterName, genreName);
+        //TODO
         List<MovieEntity> entities = movieRepository.findAll(movieSpecification.getByFilters(filtersDTO));
         List<MovieDTO> dtos = movieMapper.movieEntity2DTOList(entities);
+        dtos.forEach(this::loadCharactersAndGenres);
         return dtos;
     }
 

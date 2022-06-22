@@ -2,7 +2,6 @@ package com.alkemy.disney.alkemylab.repository;
 
 import com.alkemy.disney.alkemylab.dto.MovieDTO;
 import com.alkemy.disney.alkemylab.entity.CharacterEntity;
-import com.alkemy.disney.alkemylab.entity.GenreEntity;
 import com.alkemy.disney.alkemylab.entity.MovieCharacterEntity;
 import com.alkemy.disney.alkemylab.entity.MovieEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,14 +17,14 @@ public interface MovieCharacterRepository extends JpaRepository<MovieCharacterEn
     @Query("delete from MovieCharacterEntity mc where mc.characterId = :id ")
     public void deleteCharacter(Long id);
 
-    //TODO @Query("select MovieEntity from MovieCharacterEntity mc where mc.characterId = :id ")
-    //List<MovieEntity> loadMovies2Character(Long id);
+    @Query("select m from MovieEntity m join MovieCharacterEntity gm on gm.movieId = m.id where gm.characterId=:id")
+    List<MovieEntity> loadMovies2Character(Long id);
 
     @Modifying
     @Query("delete from MovieCharacterEntity mc where mc.movieId = :id")
     void deleteMovie(Long id);
 
-    //void updateCharacterMovies(Long id, List<MovieEntity> movies);
+    //TODO void updateCharacterMovies(Long id, List<MovieEntity> movies);
 
     @Query("select c from CharacterEntity c join MovieCharacterEntity gm on gm.characterId = c.id where gm.movieId =:id")
     List<CharacterEntity> loadCharacters2Movie(Long id);

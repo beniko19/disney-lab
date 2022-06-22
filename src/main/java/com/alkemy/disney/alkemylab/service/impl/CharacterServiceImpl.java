@@ -45,14 +45,14 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     private void loadMovies(CharacterDTO character) {
-        //character.setMovies(movieMapper.movieEntity2DTOList(
-          //      movieCharacterRepository.loadMovies2Character(character.getId())));
+        character.setMovies(movieMapper.movieEntity2DTOList(movieCharacterRepository.loadMovies2Character(character.getId())));
     }
 
-    public List<CharacterDTO> getByFilters(String name, Integer age, Integer weight, List<Long> movies, String order) {
-        CharacterFiltersDTO filtersDTO = new CharacterFiltersDTO(name, age, weight, movies, order);
+    public List<CharacterDTO> getByFilters(String name, Integer age, Integer weight, String movieName, String order) {
+        CharacterFiltersDTO filtersDTO = new CharacterFiltersDTO(name, age, weight, movieName, order);
         List<CharacterEntity> entities = characterRepository.findAll(characterSpecification.getByFilters(filtersDTO));
         List<CharacterDTO> dtos = characterMapper.characterEntitySet2DTOList(entities);
+        dtos.forEach(this::loadMovies);
         return dtos;
     }
 
@@ -71,10 +71,13 @@ public class CharacterServiceImpl implements CharacterService {
         characterRepository.getReferenceById(id).setAge(entity.getAge());
         characterRepository.getReferenceById(id).setBackground(entity.getBackground());
         characterRepository.save(characterRepository.getReferenceById(id));
-        //movieCharacterRepository.updateCharacterMovies(id, movieMapper.movieDTO2EntityList(character.getMovies()));
         CharacterDTO result = characterMapper.characterEntity2DTO(characterRepository.getReferenceById(id));
-        //TODO loadMovies(result);
+        loadMovies(result);
         return result;
+    }
+
+    private void removeMovies(Long id) {
+        movieCharacterRepository.deleteMovie(id);
     }
 
     private void addMovies(CharacterDTO dto, CharacterDTO result) {
@@ -85,5 +88,6 @@ public class CharacterServiceImpl implements CharacterService {
             movieCharacter.setCharacterId(result.getId());
             movieCharacterRepository.save(movieCharacter);
         });
+        loadMovies(result);
     }
 }

@@ -13,11 +13,10 @@ import java.util.List;
 
 @Repository
 public interface GenreMovieRepository extends JpaRepository<GenreMovieEntity, Long> {
-    //TODO List<MovieDTO> loadMovies2Genre(GenreDTO result);
 
-    //@Query("SELECT gm.genreId FROM GenreMovieEntity gm\n" +
-      //      "JOIN GenreEntity g on gm.genreId = g.id\n" +
-        //    "JOIN MovieEntity m on gm.movieId = m.id where m.id=:id")
+    @Query("select m from MovieEntity m join GenreMovieEntity  gm on gm.movieId = m.id where gm.genreId=:id")
+    List<MovieEntity> loadMovies2Genre(Long id);
+
     @Query("select g from GenreEntity g join GenreMovieEntity gm on gm.genreId = g.id where gm.movieId =:id")
     List<GenreEntity> loadGenres2Movie(Long id);
 }

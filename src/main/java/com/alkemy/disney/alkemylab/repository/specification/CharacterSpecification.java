@@ -2,15 +2,13 @@ package com.alkemy.disney.alkemylab.repository.specification;
 
 import com.alkemy.disney.alkemylab.dto.CharacterFiltersDTO;
 import com.alkemy.disney.alkemylab.entity.CharacterEntity;
+import com.alkemy.disney.alkemylab.entity.MovieCharacterEntity;
 import com.alkemy.disney.alkemylab.entity.MovieEntity;
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 @Component
@@ -28,10 +26,15 @@ public class CharacterSpecification {
             if (filtersDTO.getWeight() != null ) {
                 predicates.add(criteriaBuilder.equal(root.get("weight"), filtersDTO.getWeight()));
             }
-            if (filtersDTO.getMovies() != null && !CollectionUtils.isEmpty(filtersDTO.getMovies())) {
+            /*if (filtersDTO.getMovies() != null && !CollectionUtils.isEmpty(filtersDTO.getMovies())) {
                 Join<MovieEntity, CharacterEntity> join = root.join("movies", JoinType.INNER);
                 Expression<String> moviesId = join.get("id");
                 predicates.add(moviesId.in(filtersDTO.getMovies()));
+            }*/
+            if (filtersDTO.getMovieName() != null) {
+                Join<MovieEntity, MovieCharacterEntity> join = root.join(filtersDTO.getMovieName(), JoinType.INNER);
+                Expression<String> movieId = join.get("id");
+                predicates.add(movieId.in(filtersDTO.getMovieName()));
             }
 
             // Remove duplicates

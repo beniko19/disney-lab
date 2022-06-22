@@ -13,7 +13,7 @@ public interface CharacterService {
 
     List<CharacterDTO> getAllCharacters();
 
-    List<CharacterDTO> getByFilters(String name, Integer age, Integer weight, List<Long> movies, String order);
+    List<CharacterDTO> getByFilters(String name, Integer age, Integer weight, String movieName, String order);
 
     void delete(Long id);
 

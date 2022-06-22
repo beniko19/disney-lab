@@ -12,18 +12,18 @@ public class MovieFiltersDTO {
     private String tittle;
     private String order;
     private Integer rating;
-    //private List<CharacterDTO> characters;
-    //private List<GenreDTO> genres;
+    private String characterName;
+    private String genreName;
 
-    public MovieFiltersDTO(String tittle, Integer rating, /*List<CharacterDTO> characters,*/
-                           /*List<GenreDTO> genres,*/ String order) {
+    public MovieFiltersDTO(String tittle, Integer rating, String order, String characterName, String genreName) {
         this.tittle = tittle;
         this.rating = rating;
-        //this.characters = characters;
-        //this.genres = genres;
+        this.characterName = characterName;
+        this.genreName = genreName;
         this.order = order;
     }
 
     public boolean isASC() { return order.compareToIgnoreCase(("ASC"))==0;}
     public boolean isDESC() { return order.compareToIgnoreCase(("DESC"))==0;}
+
 }

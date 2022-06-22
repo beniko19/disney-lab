@@ -7,6 +7,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "character")
@@ -23,4 +24,5 @@ public class CharacterEntity implements Serializable {
     private int weight;
     private String background;
     private boolean deleted;
+
 }

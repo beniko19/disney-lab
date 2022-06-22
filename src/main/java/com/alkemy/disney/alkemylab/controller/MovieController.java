@@ -37,11 +37,11 @@ public class MovieController {
     public ResponseEntity<List<MovieDTO>> getDetailsByFilters(
             @RequestParam(required = false) String tittle,
             @RequestParam(required = false) String order,
-            @RequestParam(required = false) Integer rating
-            //@RequestParam(required = false) List<CharacterDTO> characters,
-            //@RequestParam(required = false) List<GenreDTO> genres
+            @RequestParam(required = false) Integer rating,
+            @RequestParam(required = false) String characterName,
+            @RequestParam(required = false) String genreName
     ) {
-        List<MovieDTO> movies = movieService.getByFilters(tittle, order, rating/*, characters, genres*/);
+        List<MovieDTO> movies = movieService.getByFilters(tittle, order, rating, characterName, genreName);
         return ResponseEntity.ok(movies);
     }
 
