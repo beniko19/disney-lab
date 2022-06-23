@@ -33,7 +33,8 @@ public class CharacterServiceImpl implements CharacterService {
         CharacterEntity entity = characterMapper.characterDTO2Entity(dto);
         CharacterEntity entitySaved = characterRepository.save(entity);
         CharacterDTO result = characterMapper.characterEntity2DTO(entitySaved);
-        addMovies(dto, result);
+        if (dto.getMovies() != null)
+            addMovies(dto, result);
         return result;
     }
 
@@ -56,13 +57,12 @@ public class CharacterServiceImpl implements CharacterService {
         return dtos;
     }
 
-    @Transactional
+    //@Transactional
     public void delete(Long id) {
         movieCharacterRepository.deleteCharacter(id);
         characterRepository.delete(characterRepository.getReferenceById(id));
     }
 
-    @Override
     public CharacterDTO update(Long id, CharacterDTO character) {
         CharacterEntity entity = characterMapper.characterDTO2Entity(character);
         characterRepository.getReferenceById(id).setImage(entity.getImage());
@@ -74,10 +74,6 @@ public class CharacterServiceImpl implements CharacterService {
         CharacterDTO result = characterMapper.characterEntity2DTO(characterRepository.getReferenceById(id));
         loadMovies(result);
         return result;
-    }
-
-    private void removeMovies(Long id) {
-        movieCharacterRepository.deleteMovie(id);
     }
 
     private void addMovies(CharacterDTO dto, CharacterDTO result) {

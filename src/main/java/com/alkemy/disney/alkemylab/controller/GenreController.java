@@ -26,12 +26,4 @@ public class GenreController {
         GenreDTO savedGenre = genreService.save(genre);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedGenre);
     }
-
-   // @GetMapping(value = "/filter")
-    //public ResponseEntity<List<GenreDTO>> getDetailsByFilters(
-      //      @RequestParam(required = false) String name,
-        //    @RequestParam(required = false) String order
-    //) {
-        //List<GenreDTO> genres = genreService.ge
-    //}
 }

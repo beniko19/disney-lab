@@ -2,9 +2,6 @@ package com.alkemy.disney.alkemylab.repository.specification;
 
 import com.alkemy.disney.alkemylab.dto.CharacterFiltersDTO;
 import com.alkemy.disney.alkemylab.entity.CharacterEntity;
-import com.alkemy.disney.alkemylab.entity.MovieCharacterEntity;
-import com.alkemy.disney.alkemylab.entity.MovieEntity;
-import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 @Component
 public class CharacterSpecification {
-
     public Specification<CharacterEntity> getByFilters(CharacterFiltersDTO filtersDTO) {
         return ((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -31,11 +27,6 @@ public class CharacterSpecification {
                 Expression<String> moviesId = join.get("id");
                 predicates.add(moviesId.in(filtersDTO.getMovies()));
             }*/
-            if (filtersDTO.getMovieName() != null) {
-                Join<MovieEntity, MovieCharacterEntity> join = root.join(filtersDTO.getMovieName(), JoinType.INNER);
-                Expression<String> movieId = join.get("id");
-                predicates.add(movieId.in(filtersDTO.getMovieName()));
-            }
 
             // Remove duplicates
             query.distinct(true);

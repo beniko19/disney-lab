@@ -12,4 +12,10 @@ public interface MovieService {
     List<MovieDTO> getByFilters(String tittle, String order, Integer rating, String characterName, String genreName);
 
     void delete(Long id);
+
+    MovieDTO addCharactersToMovie(Long movieId, List<Long> charactersId);
+
+    MovieDTO removeCharactersFromMovie(Long movieId, List<Long> charactersId);
+
+    MovieDTO update(Long id, MovieDTO movie);
 }

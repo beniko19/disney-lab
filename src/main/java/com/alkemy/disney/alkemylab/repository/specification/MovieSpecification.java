@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 @Component
 public class MovieSpecification {
@@ -24,9 +25,6 @@ public class MovieSpecification {
             if (filtersDTO.getCharacterName() != null){
 
             }
-
-
-
 
             // Remove duplicates
             query.distinct(true);

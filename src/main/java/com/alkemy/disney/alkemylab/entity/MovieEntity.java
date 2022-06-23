@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Entity
 @Data
-@Table(name = "movie")
+@Table(name = "movies")
 @SQLDelete(sql = "UPDATE movie SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 

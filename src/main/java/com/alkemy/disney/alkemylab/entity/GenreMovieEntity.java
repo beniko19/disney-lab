@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "genre_movie")
+@Table(name = "genres_movies")
 @SQLDelete(sql = "UPDATE genre_movie SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 

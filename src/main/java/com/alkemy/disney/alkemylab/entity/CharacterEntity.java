@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "character")
+@Table(name = "characters")
 @Data
 @SQLDelete(sql = "UPDATE character SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")

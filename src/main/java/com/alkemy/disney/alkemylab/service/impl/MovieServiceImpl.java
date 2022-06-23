@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MovieServiceImpl implements MovieService {
@@ -37,22 +38,27 @@ public class MovieServiceImpl implements MovieService {
         MovieEntity entity = movieMapper.movieDTO2Entity(dto);
         MovieEntity entitySaved = movieRepository.save(entity);
         MovieDTO result = movieMapper.movieEntity2DTO(entitySaved);
-        addGenresAndCharacters(dto, result);
+        addCharactersToMovie(dto, result);
+        addGenresToMovie(dto, result);
         return result;
     }
 
     public List<MovieDTO> getAllMovies() {
         List<MovieEntity> entities = movieRepository.findAll();
         List<MovieDTO> result = movieMapper.movieEntity2DTOList(entities);
-        result.forEach(this::loadCharactersAndGenres);
+        result.forEach(this::loadGenresToMovie);
+        result.forEach(this::loadCharactersToMovie);
         return result;
     }
 
-    private void loadCharactersAndGenres(MovieDTO movie) {
+    private void loadGenresToMovie(MovieDTO movie) {
         List<GenreEntity> genresMovieEntity = genreMovieRepository.loadGenres2Movie(movie.getId());
+        movie.setGenres(genreMapper.genreEntity2DTOList(genresMovieEntity));
+    }
+
+    private void loadCharactersToMovie(MovieDTO movie) {
         List<CharacterEntity> charactersMovieEntity = movieCharacterRepository.loadCharacters2Movie(movie.getId());
         movie.setCharacters(characterMapper.characterEntity2DTOList(charactersMovieEntity));
-        movie.setGenres(genreMapper.genreEntity2DTOList(genresMovieEntity));
     }
 
     public List<MovieDTO> getByFilters(String tittle, String order, Integer rating, String characterName, String genreName) {
@@ -60,7 +66,7 @@ public class MovieServiceImpl implements MovieService {
         //TODO
         List<MovieEntity> entities = movieRepository.findAll(movieSpecification.getByFilters(filtersDTO));
         List<MovieDTO> dtos = movieMapper.movieEntity2DTOList(entities);
-        dtos.forEach(this::loadCharactersAndGenres);
+        dtos.forEach(this::loadGenresToMovie);
         return dtos;
     }
 
@@ -69,8 +75,41 @@ public class MovieServiceImpl implements MovieService {
         movieCharacterRepository.deleteMovie(id);
         movieRepository.delete(movieRepository.getReferenceById(id));
     }
+    @Transactional
+    public MovieDTO addCharactersToMovie(Long movieId, List<Long> charactersId) {
+        charactersId.forEach(id -> {
+            MovieCharacterEntity movieCharacter = new MovieCharacterEntity();
+            movieCharacter.setMovieId(movieId);
+            movieCharacter.setCharacterId(id);
+            movieCharacterRepository.save(movieCharacter);
+        });
+        MovieEntity entity = movieRepository.getReferenceById(movieId);
+        MovieDTO result = movieMapper.movieEntity2DTO(entity);
+        loadCharactersToMovie(result);
+        return result;
+    }
+    @Transactional
+    public MovieDTO removeCharactersFromMovie(Long movieId, List<Long> charactersId) {
+        charactersId.stream().forEach(id -> movieCharacterRepository.deleterCharacterFromMovie(id, movieId));
+        MovieEntity entity = movieRepository.getReferenceById(movieId);
+        MovieDTO result = movieMapper.movieEntity2DTO(entity);
+        loadCharactersToMovie(result);
+        return result;
+    }
 
-    private void addGenresAndCharacters(MovieDTO dto, MovieDTO result) {
+    public MovieDTO update(Long id, MovieDTO movie) {
+        MovieEntity entity = movieMapper.movieDTO2Entity(movie);
+        movieRepository.getReferenceById(id).setImage(entity.getImage());
+        movieRepository.getReferenceById(id).setTittle(entity.getTittle());
+        movieRepository.getReferenceById(id).setCreationDate(entity.getCreationDate());
+        movieRepository.getReferenceById(id).setRating(entity.getRating());
+        movieRepository.save(movieRepository.getReferenceById(id));
+        MovieDTO result = movieMapper.movieEntity2DTO(entity);
+        loadGenresToMovie(result); loadCharactersToMovie(result);
+        return result;
+    }
+
+    private void addCharactersToMovie(MovieDTO dto, MovieDTO result) {
         result.setCharacters(dto.getCharacters());
         dto.getCharacters().forEach(character -> {
             MovieCharacterEntity movieCharacter = new MovieCharacterEntity();
@@ -78,12 +117,16 @@ public class MovieServiceImpl implements MovieService {
             movieCharacter.setCharacterId(character.getId());
             movieCharacterRepository.save(movieCharacter);
         });
-        result.setGenres(dto.getGenres());
+        loadCharactersToMovie(result);
+    }
+
+    private void addGenresToMovie(MovieDTO dto, MovieDTO result) {
         dto.getGenres().forEach(genre -> {
             GenreMovieEntity genreMovie = new GenreMovieEntity();
             genreMovie.setMovieId(result.getId());
             genreMovie.setGenreId(genre.getId());
             genreMovieRepository.save(genreMovie);
         });
+        loadGenresToMovie(result);
     }
 }

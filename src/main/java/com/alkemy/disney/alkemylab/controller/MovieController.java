@@ -50,4 +50,23 @@ public class MovieController {
         movieService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @PostMapping(value = "/{id}/characters/{charactersId}")
+    public ResponseEntity<MovieDTO> addCharactersToMovie(@PathVariable Long id, @PathVariable List<Long> charactersId) {
+        MovieDTO result = movieService.addCharactersToMovie(id, charactersId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @DeleteMapping(value = "{id}/characters/{charactersId}")
+    public ResponseEntity<MovieDTO> removeCharactersFromMovie(@PathVariable Long id, @PathVariable List<Long> charactersId) {
+        MovieDTO result = movieService.removeCharactersFromMovie(id, charactersId);
+        return ResponseEntity.ok(result);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<MovieDTO> update(@PathVariable Long id, @RequestBody MovieDTO movie) {
+        MovieDTO result = movieService.update(id, movie);
+        return ResponseEntity.ok().body(result);
+    }
+
 }

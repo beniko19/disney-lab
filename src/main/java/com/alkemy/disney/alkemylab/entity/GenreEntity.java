@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "genre")
+@Table(name = "genres")
 @Data
 @SQLDelete(sql = "UPDATE genre SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
