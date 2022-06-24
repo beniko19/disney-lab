@@ -12,14 +12,14 @@ public class MovieFiltersDTO {
     private String tittle;
     private String order;
     private Integer rating;
-    private String characterName;
-    private String genreName;
+    private Long characterId;
+    private Long genreId;
 
-    public MovieFiltersDTO(String tittle, Integer rating, String order, String characterName, String genreName) {
+    public MovieFiltersDTO(String tittle, Integer rating, String order, Long characterId, Long genreId) {
         this.tittle = tittle;
         this.rating = rating;
-        this.characterName = characterName;
-        this.genreName = genreName;
+        this.characterId = characterId;
+        this.genreId = genreId;
         this.order = order;
     }
 

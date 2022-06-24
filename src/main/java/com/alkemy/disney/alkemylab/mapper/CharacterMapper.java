@@ -11,9 +11,6 @@ import java.util.List;
 
 @Component
 public class CharacterMapper {
-    @Autowired
-    private MovieMapper movieMapper;
-
     public CharacterEntity characterDTO2Entity(CharacterDTO dto) {
         CharacterEntity characterEntity = new CharacterEntity();
         characterEntity.setImage(dto.getImage());

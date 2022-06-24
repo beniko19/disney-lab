@@ -17,5 +17,7 @@ public interface CharacterService {
 
     void delete(Long id);
 
+    public CharacterDTO getDetailsById(Long id);
+
     CharacterDTO update(Long id, CharacterDTO character);
 }

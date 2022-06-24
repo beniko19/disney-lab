@@ -3,6 +3,7 @@ package com.alkemy.disney.alkemylab.service.impl;
 import com.alkemy.disney.alkemylab.dto.MovieDTO;
 import com.alkemy.disney.alkemylab.dto.MovieFiltersDTO;
 import com.alkemy.disney.alkemylab.entity.*;
+import com.alkemy.disney.alkemylab.exception.ParamNotFound;
 import com.alkemy.disney.alkemylab.mapper.CharacterMapper;
 import com.alkemy.disney.alkemylab.mapper.GenreMapper;
 import com.alkemy.disney.alkemylab.mapper.MovieMapper;
@@ -38,8 +39,10 @@ public class MovieServiceImpl implements MovieService {
         MovieEntity entity = movieMapper.movieDTO2Entity(dto);
         MovieEntity entitySaved = movieRepository.save(entity);
         MovieDTO result = movieMapper.movieEntity2DTO(entitySaved);
-        addCharactersToMovie(dto, result);
-        addGenresToMovie(dto, result);
+        if (dto.getCharacters() != null)
+            addCharactersToMovie(dto, result);
+        if (dto.getGenres() != null)
+            addGenresToMovie(dto, result);
         return result;
     }
 
@@ -51,18 +54,8 @@ public class MovieServiceImpl implements MovieService {
         return result;
     }
 
-    private void loadGenresToMovie(MovieDTO movie) {
-        List<GenreEntity> genresMovieEntity = genreMovieRepository.loadGenres2Movie(movie.getId());
-        movie.setGenres(genreMapper.genreEntity2DTOList(genresMovieEntity));
-    }
-
-    private void loadCharactersToMovie(MovieDTO movie) {
-        List<CharacterEntity> charactersMovieEntity = movieCharacterRepository.loadCharacters2Movie(movie.getId());
-        movie.setCharacters(characterMapper.characterEntity2DTOList(charactersMovieEntity));
-    }
-
-    public List<MovieDTO> getByFilters(String tittle, String order, Integer rating, String characterName, String genreName) {
-        MovieFiltersDTO filtersDTO = new MovieFiltersDTO(tittle, rating, order, characterName, genreName);
+    public List<MovieDTO> getByFilters(String tittle, String order, Integer rating, Long characterId, Long genreId) {
+        MovieFiltersDTO filtersDTO = new MovieFiltersDTO(tittle, rating, order, characterId, genreId);
         //TODO
         List<MovieEntity> entities = movieRepository.findAll(movieSpecification.getByFilters(filtersDTO));
         List<MovieDTO> dtos = movieMapper.movieEntity2DTOList(entities);
@@ -72,40 +65,61 @@ public class MovieServiceImpl implements MovieService {
 
     @Transactional
     public void delete(Long id) {
-        movieCharacterRepository.deleteMovie(id);
-        movieRepository.delete(movieRepository.getReferenceById(id));
+        Optional<MovieEntity> entity = movieRepository.findById(id);
+        if (!entity.isPresent())
+            throw new ParamNotFound("Invalid movie id");
+        movieRepository.deleteByIdMovie(id);
+        Optional<MovieCharacterEntity> movieCharacter = movieCharacterRepository.findByMovieId(id);
+        if (movieCharacter.isPresent())
+            movieCharacterRepository.deleteMovie(id);
     }
     @Transactional
     public MovieDTO addCharactersToMovie(Long movieId, List<Long> charactersId) {
+        Optional<MovieEntity> entity = movieRepository.findById(movieId);
+        if (!entity.isPresent())
+            throw new ParamNotFound("Invalid movie id");
         charactersId.forEach(id -> {
             MovieCharacterEntity movieCharacter = new MovieCharacterEntity();
             movieCharacter.setMovieId(movieId);
             movieCharacter.setCharacterId(id);
             movieCharacterRepository.save(movieCharacter);
         });
-        MovieEntity entity = movieRepository.getReferenceById(movieId);
-        MovieDTO result = movieMapper.movieEntity2DTO(entity);
+        MovieDTO result = movieMapper.movieEntity2DTO(entity.get());
         loadCharactersToMovie(result);
         return result;
     }
     @Transactional
     public MovieDTO removeCharactersFromMovie(Long movieId, List<Long> charactersId) {
+        Optional<MovieEntity> entity = movieRepository.findById(movieId);
+        if (!entity.isPresent())
+            throw new ParamNotFound("Invalid movie id");
         charactersId.stream().forEach(id -> movieCharacterRepository.deleterCharacterFromMovie(id, movieId));
-        MovieEntity entity = movieRepository.getReferenceById(movieId);
-        MovieDTO result = movieMapper.movieEntity2DTO(entity);
+        MovieDTO result = movieMapper.movieEntity2DTO(entity.get());
         loadCharactersToMovie(result);
         return result;
     }
 
     public MovieDTO update(Long id, MovieDTO movie) {
-        MovieEntity entity = movieMapper.movieDTO2Entity(movie);
-        movieRepository.getReferenceById(id).setImage(entity.getImage());
-        movieRepository.getReferenceById(id).setTittle(entity.getTittle());
-        movieRepository.getReferenceById(id).setCreationDate(entity.getCreationDate());
-        movieRepository.getReferenceById(id).setRating(entity.getRating());
-        movieRepository.save(movieRepository.getReferenceById(id));
-        MovieDTO result = movieMapper.movieEntity2DTO(entity);
+        Optional<MovieEntity>  entity = movieRepository.findById(id);
+        if (!entity.isPresent())
+            throw new ParamNotFound("Invalid movie id");
+        MovieEntity updatedMovie = movieMapper.movieDTO2Entity(movie);
+        entity.get().setImage(updatedMovie.getImage());
+        entity.get().setCreationDate(updatedMovie.getCreationDate());
+        entity.get().setRating(updatedMovie.getRating());
+        movieRepository.save(entity.get());
+        MovieDTO result = movieMapper.movieEntity2DTO(entity.get());
         loadGenresToMovie(result); loadCharactersToMovie(result);
+        return result;
+    }
+
+    @Override
+    public MovieDTO getMovieById(Long id) {
+        Optional<MovieEntity>  entity = movieRepository.findById(id);
+        if (!entity.isPresent())
+            throw new ParamNotFound("Invalid movie id");
+        MovieDTO result = movieMapper.movieEntity2DTO(entity.get());
+        loadCharactersToMovie(result); loadGenresToMovie(result);
         return result;
     }
 
@@ -128,5 +142,15 @@ public class MovieServiceImpl implements MovieService {
             genreMovieRepository.save(genreMovie);
         });
         loadGenresToMovie(result);
+    }
+
+    private void loadGenresToMovie(MovieDTO movie) {
+        List<GenreEntity> genresMovieEntity = genreMovieRepository.loadGenres2Movie(movie.getId());
+        movie.setGenres(genreMapper.genreEntity2DTOList(genresMovieEntity));
+    }
+
+    private void loadCharactersToMovie(MovieDTO movie) {
+        List<CharacterEntity> charactersMovieEntity = movieCharacterRepository.loadCharacters2Movie(movie.getId());
+        movie.setCharacters(characterMapper.characterEntity2DTOList(charactersMovieEntity));
     }
 }

@@ -5,6 +5,7 @@ import com.alkemy.disney.alkemylab.dto.GenreDTO;
 import com.alkemy.disney.alkemylab.dto.MovieDTO;
 import com.alkemy.disney.alkemylab.entity.CharacterEntity;
 import com.alkemy.disney.alkemylab.entity.GenreEntity;
+import com.alkemy.disney.alkemylab.entity.MovieEntity;
 import com.alkemy.disney.alkemylab.service.MovieService;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("movies")
@@ -38,11 +40,17 @@ public class MovieController {
             @RequestParam(required = false) String tittle,
             @RequestParam(required = false) String order,
             @RequestParam(required = false) Integer rating,
-            @RequestParam(required = false) String characterName,
-            @RequestParam(required = false) String genreName
+            @RequestParam(required = false) Long characterId,
+            @RequestParam(required = false) Long genreId
     ) {
-        List<MovieDTO> movies = movieService.getByFilters(tittle, order, rating, characterName, genreName);
+        List<MovieDTO> movies = movieService.getByFilters(tittle, order, rating, characterId, genreId);
         return ResponseEntity.ok(movies);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<MovieDTO> getMovieById(@PathVariable Long id) {
+        MovieDTO result = movieService.getMovieById(id);
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping(value = "/{id}")
