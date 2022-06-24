@@ -22,9 +22,9 @@ public class MovieSpecification {
             if (filtersDTO.getRating() != null)
                 predicates.add(criteriaBuilder.equal(root.get("rating"),filtersDTO.getRating()));
 
-            if (filtersDTO.getCharacterName() != null){
+            //if (filtersDTO.getCharacterName() != null)
 
-            }
+
 
             // Remove duplicates
             query.distinct(true);

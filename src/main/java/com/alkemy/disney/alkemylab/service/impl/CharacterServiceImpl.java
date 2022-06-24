@@ -4,6 +4,7 @@ import com.alkemy.disney.alkemylab.dto.CharacterDTO;
 import com.alkemy.disney.alkemylab.dto.CharacterFiltersDTO;
 import com.alkemy.disney.alkemylab.entity.CharacterEntity;
 import com.alkemy.disney.alkemylab.entity.MovieCharacterEntity;
+import com.alkemy.disney.alkemylab.exception.ParamNotFound;
 import com.alkemy.disney.alkemylab.mapper.CharacterMapper;
 import com.alkemy.disney.alkemylab.mapper.MovieMapper;
 import com.alkemy.disney.alkemylab.repository.CharacterRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CharacterServiceImpl implements CharacterService {
@@ -45,8 +47,13 @@ public class CharacterServiceImpl implements CharacterService {
         return result;
     }
 
-    private void loadMovies(CharacterDTO character) {
-        character.setMovies(movieMapper.movieEntity2DTOList(movieCharacterRepository.loadMovies2Character(character.getId())));
+    public CharacterDTO getDetailsById(Long id) {
+        Optional<CharacterEntity> entity = characterRepository.findById(id);
+        if (!entity.isPresent())
+            throw new ParamNotFound("Invalid character id");
+        CharacterDTO result = characterMapper.characterEntity2DTO(entity.get());
+        loadMovies(result);
+        return result;
     }
 
     public List<CharacterDTO> getByFilters(String name, Integer age, Integer weight, String movieName, String order) {
@@ -57,20 +64,28 @@ public class CharacterServiceImpl implements CharacterService {
         return dtos;
     }
 
-    //@Transactional
+    @Transactional
     public void delete(Long id) {
-        movieCharacterRepository.deleteCharacter(id);
-        characterRepository.delete(characterRepository.getReferenceById(id));
+        Optional<CharacterEntity> entity = characterRepository.findById(id);
+        if (!entity.isPresent()  )
+            throw new ParamNotFound("Invalid character id");
+        characterRepository.deleteByIdCharacter(id);
+        Optional<MovieCharacterEntity> movieCharacterEntity = movieCharacterRepository.findByCharacterId(id);
+        if (movieCharacterEntity.isPresent())
+            movieCharacterRepository.deleteCharacter(id);
     }
 
     public CharacterDTO update(Long id, CharacterDTO character) {
-        CharacterEntity entity = characterMapper.characterDTO2Entity(character);
-        characterRepository.getReferenceById(id).setImage(entity.getImage());
-        characterRepository.getReferenceById(id).setName(entity.getName());
-        characterRepository.getReferenceById(id).setWeight(entity.getWeight());
-        characterRepository.getReferenceById(id).setAge(entity.getAge());
-        characterRepository.getReferenceById(id).setBackground(entity.getBackground());
-        characterRepository.save(characterRepository.getReferenceById(id));
+        Optional<CharacterEntity> entity = characterRepository.findById(id);
+        if (!entity.isPresent())
+            throw new ParamNotFound("Invalid character id");
+        CharacterEntity updatedCharacter = characterMapper.characterDTO2Entity(character);
+        entity.get().setAge(updatedCharacter.getAge());
+        entity.get().setBackground(updatedCharacter.getBackground());
+        entity.get().setName(updatedCharacter.getName());
+        entity.get().setImage(updatedCharacter.getImage());
+        entity.get().setWeight(updatedCharacter.getWeight());
+        characterRepository.save(entity.get());
         CharacterDTO result = characterMapper.characterEntity2DTO(characterRepository.getReferenceById(id));
         loadMovies(result);
         return result;
@@ -85,5 +100,9 @@ public class CharacterServiceImpl implements CharacterService {
             movieCharacterRepository.save(movieCharacter);
         });
         loadMovies(result);
+    }
+
+    private void loadMovies(CharacterDTO character) {
+        character.setMovies(movieMapper.movieEntity2DTOList(movieCharacterRepository.loadMovies2Character(character.getId())));
     }
 }
