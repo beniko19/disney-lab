@@ -1,14 +1,29 @@
 package com.alkemy.disney.alkemylab.auth.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Size;
+import java.util.Set;
 
-@Data
+import javax.validation.constraints.*;
+@Getter
+@Setter
+@AllArgsConstructor
 public class UserDTO {
-    @Email(message = "Username must be an email")
+
+    @NotBlank
+    @Size(min = 3, max = 20)
     private String username;
-    @Size(min = 8)
+
+    @NotBlank
+    @Size(max = 50)
+    @Email
+    private String email;
+
+    private Set<String> role;
+
+    @NotBlank
+    @Size(min = 6, max = 40)
     private String password;
 }
