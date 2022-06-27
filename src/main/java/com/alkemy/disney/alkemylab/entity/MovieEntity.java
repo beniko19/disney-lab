@@ -1,5 +1,9 @@
 package com.alkemy.disney.alkemylab.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -10,13 +14,14 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Data
 @Table(name = "movies")
-@SQLDelete(sql = "UPDATE movie SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE movies SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 
 public class MovieEntity implements Serializable {
@@ -30,4 +35,19 @@ public class MovieEntity implements Serializable {
     private LocalDate creationDate;
     private int rating;
     private boolean deleted;
+
+    @ManyToMany(cascade = CascadeType.ALL, targetEntity = CharacterEntity.class)
+    @JoinTable(
+            name = "movies_characters",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "character_id"))
+    private List<CharacterEntity> characters = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.ALL, targetEntity = GenreEntity.class)
+    @JoinTable(
+            name = "movies_genres",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    private List<GenreEntity> genres = new ArrayList<>();
+
 }
