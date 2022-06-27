@@ -1,20 +1,14 @@
 package com.alkemy.disney.alkemylab.controller;
 
-import com.alkemy.disney.alkemylab.dto.CharacterDTO;
-import com.alkemy.disney.alkemylab.dto.GenreDTO;
 import com.alkemy.disney.alkemylab.dto.MovieDTO;
-import com.alkemy.disney.alkemylab.entity.CharacterEntity;
-import com.alkemy.disney.alkemylab.entity.GenreEntity;
-import com.alkemy.disney.alkemylab.entity.MovieEntity;
 import com.alkemy.disney.alkemylab.service.MovieService;
-import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("movies")
@@ -23,55 +17,61 @@ public class MovieController {
     @Autowired
     private MovieService movieService;
 
-    @GetMapping("getAll")
+    @GetMapping("/getAll")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<List<MovieDTO>> getAll() {
         List<MovieDTO> movies = movieService.getAllMovies();
         return ResponseEntity.ok().body(movies);
     }
 
-    @PostMapping
+    @PostMapping("/save")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<MovieDTO> save(@RequestBody MovieDTO movie){
         MovieDTO savedMovie = movieService.save(movie);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedMovie);
     }
 
-    @GetMapping(value = "/filter")
+    @GetMapping("/filter")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<List<MovieDTO>> getDetailsByFilters(
             @RequestParam(required = false) String tittle,
-            @RequestParam(required = false) String order,
-            @RequestParam(required = false) Integer rating,
-            @RequestParam(required = false) Long characterId,
-            @RequestParam(required = false) Long genreId
+            @RequestParam(required = false, defaultValue = "ASC") String order,
+            @RequestParam(required = false) List<Long> genreId
     ) {
-        List<MovieDTO> movies = movieService.getByFilters(tittle, order, rating, characterId, genreId);
+        List<MovieDTO> movies = movieService.getByFilters(tittle, order, genreId);
         return ResponseEntity.ok(movies);
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping("/getMovie/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<MovieDTO> getMovieById(@PathVariable Long id) {
         MovieDTO result = movieService.getMovieById(id);
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         movieService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PostMapping(value = "/{id}/characters/{charactersId}")
+    @PostMapping("/{id}/addCharacters/{charactersId}")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<MovieDTO> addCharactersToMovie(@PathVariable Long id, @PathVariable List<Long> charactersId) {
         MovieDTO result = movieService.addCharactersToMovie(id, charactersId);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @DeleteMapping(value = "{id}/characters/{charactersId}")
+    @DeleteMapping("{id}/removeCharacters/{charactersId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MovieDTO> removeCharactersFromMovie(@PathVariable Long id, @PathVariable List<Long> charactersId) {
         MovieDTO result = movieService.removeCharactersFromMovie(id, charactersId);
         return ResponseEntity.ok(result);
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<MovieDTO> update(@PathVariable Long id, @RequestBody MovieDTO movie) {
         MovieDTO result = movieService.update(id, movie);
         return ResponseEntity.ok().body(result);
