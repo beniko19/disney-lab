@@ -1,77 +1,52 @@
 package com.alkemy.disney.alkemylab.auth.entity;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
-import java.util.Collection;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
+import java.util.HashSet;
+import java.util.Set;
 @Entity
-@Table(name = "users")
-
-public class UserEntity implements UserDetails {
-
+@Getter
+@Setter
+@Table(name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "username"),
+                @UniqueConstraint(columnNames = "email")
+        })
+public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Email
+
+    @NotBlank
+    @Size(max = 20)
     private String username;
-    @Size(min = 8)
+
+    @NotBlank
+    @Size(max = 50)
+    @Email
+    private String email;
+
+    @NotBlank
+    @Size(max = 120)
     private String password;
-    private boolean accountNonExpired;
-    private boolean accountNonLocked;
-    private boolean credentialsNonExpired;
-    private boolean enabled;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<RoleEntity> roles = new HashSet<>();
 
     public UserEntity() {
-        accountNonExpired = true;
-        accountNonLocked = true;
-        credentialsNonExpired = true;
-        enabled = true;
     }
 
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return accountNonExpired;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return accountNonLocked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return credentialsNonExpired;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setUsername(String username) {
+    public UserEntity(String username, String email, String password) {
         this.username = username;
-    }
-
-    public void setPassword(String password) {
+        this.email = email;
         this.password = password;
     }
 }
