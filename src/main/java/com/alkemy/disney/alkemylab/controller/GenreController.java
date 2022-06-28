@@ -1,6 +1,6 @@
 package com.alkemy.disney.alkemylab.controller;
 
-import com.alkemy.disney.alkemylab.dto.GenreDTO;
+import com.alkemy.disney.alkemylab.dto.genre.GenreDTO;
 import com.alkemy.disney.alkemylab.service.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
