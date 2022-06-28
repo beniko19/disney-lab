@@ -1,34 +1,25 @@
 package com.alkemy.disney.alkemylab.mapper;
 
-import com.alkemy.disney.alkemylab.dto.GenreDTO;
+import com.alkemy.disney.alkemylab.dto.genre.GenreDTO;
 import com.alkemy.disney.alkemylab.entity.GenreEntity;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class GenreMapper {
+@Mapper
+public interface GenreMapper {
 
-    public GenreEntity genreDTO2Entity(GenreDTO dto) {
-        GenreEntity genreEntity = new GenreEntity();
-        genreEntity.setName(dto.getName());
-        genreEntity.setImage(dto.getImage());
-        genreEntity.setDeleted(false);
-        return genreEntity;
-    }
+    GenreMapper INSTANCE = Mappers.getMapper(GenreMapper.class);
 
-    public GenreDTO genreEntity2DTO(GenreEntity entity) {
-        GenreDTO dto = new GenreDTO();
-        dto.setId(entity.getId());
-        dto.setName(entity.getName());
-        dto.setImage(entity.getImage());
-        return dto;
-    }
 
-    public List<GenreDTO> genreEntity2DTOList(List<GenreEntity> entities) {
-        List<GenreDTO> dtos = new ArrayList<>();
-        entities.stream().forEach(entity -> dtos.add(genreEntity2DTO(entity)));
-        return dtos;
-    }
+    List<GenreEntity> genreDTOList2EntityList(List<GenreDTO> genres);
+
+    GenreEntity genreDTO2Entity(GenreDTO dto);
+
+    GenreDTO genreEntity2DTO(GenreEntity entitySaved);
+
+    List<GenreDTO> genreEntity2DTOList(List<GenreEntity> entities);
 }

@@ -1,44 +1,26 @@
 package com.alkemy.disney.alkemylab.mapper;
 
-import com.alkemy.disney.alkemylab.dto.MovieDTO;
+import com.alkemy.disney.alkemylab.dto.movie.MovieDTO;
 import com.alkemy.disney.alkemylab.entity.MovieEntity;
+import org.mapstruct.Context;
+import org.mapstruct.InheritInverseConfiguration;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Component
-public class MovieMapper {
+//@Component
+@Mapper
+public interface MovieMapper {
 
-    public MovieEntity movieDTO2Entity(MovieDTO dto) {
-        MovieEntity movieEntity = new MovieEntity();
-        movieEntity.setImage(dto.getImage());
-        movieEntity.setTittle(dto.getTittle());
-        movieEntity.setCreationDate(dto.getCreationDate());
-        movieEntity.setRating(dto.getRating());
-        return movieEntity;
+    MovieMapper INSTANCE = Mappers.getMapper(MovieMapper.class);
 
-    }
+    List<MovieDTO> movieEntity2DTOList(List<MovieEntity> entities);
 
-    public MovieDTO movieEntity2DTO(MovieEntity entity) {
-        MovieDTO dto = new MovieDTO();
-        dto.setId(entity.getId());
-        dto.setImage(entity.getImage());
-        dto.setTittle(entity.getTittle());
-        dto.setCreationDate(entity.getCreationDate());
-        dto.setRating(entity.getRating());
-        return dto;
-    }
+    //@InheritInverseConfiguration
+    MovieEntity movieDTO2Entity(MovieDTO dto);
 
-    public List<MovieDTO> movieEntity2DTOList(List<MovieEntity> entities) {
-        List<MovieDTO> dtos = new ArrayList<>();
-        entities.stream().forEach(entity -> dtos.add(movieEntity2DTO(entity)));
-        return dtos;
-    }
 
-    public List<MovieEntity> movieDTO2EntityList(List<MovieDTO> dtos) {
-        List<MovieEntity> entities = new ArrayList<>();
-        dtos.stream().forEach(this::movieDTO2Entity);
-        return entities;
-    }
+    MovieDTO movieEntity2DTO(MovieEntity entitySaved);
 }
