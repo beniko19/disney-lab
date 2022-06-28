@@ -1,6 +1,7 @@
 package com.alkemy.disney.alkemylab.service;
 
 import com.alkemy.disney.alkemylab.dto.character.CharacterDTO;
+
 import java.util.List;
 
 public interface CharacterService {
@@ -9,7 +10,7 @@ public interface CharacterService {
 
     List<CharacterDTO> getAllCharacters();
 
-    List<CharacterDTO> getByFilters(String name, Integer age, Integer weight, String movieName, String order);
+    List<CharacterDTO> getByFilters(String name, Integer age, Integer weight, List<Long> movieId, String order);
 
     void delete(Long id);
 
