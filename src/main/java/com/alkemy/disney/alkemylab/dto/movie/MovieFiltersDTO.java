@@ -1,4 +1,4 @@
-package com.alkemy.disney.alkemylab.dto;
+package com.alkemy.disney.alkemylab.dto.movie;
 
 import com.alkemy.disney.alkemylab.entity.CharacterEntity;
 import com.alkemy.disney.alkemylab.entity.GenreEntity;
@@ -11,15 +11,11 @@ public class MovieFiltersDTO {
 
     private String tittle;
     private String order;
-    private Integer rating;
-    private Long characterId;
-    private Long genreId;
+    private List<Long> genres;
 
-    public MovieFiltersDTO(String tittle, Integer rating, String order, Long characterId, Long genreId) {
+    public MovieFiltersDTO(String tittle, String order, List<Long> genresId) {
         this.tittle = tittle;
-        this.rating = rating;
-        this.characterId = characterId;
-        this.genreId = genreId;
+        this.genres = genresId;
         this.order = order;
     }
 

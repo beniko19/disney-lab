@@ -1,6 +1,6 @@
 package com.alkemy.disney.alkemylab.controller;
 
-import com.alkemy.disney.alkemylab.dto.MovieDTO;
+import com.alkemy.disney.alkemylab.dto.movie.MovieDTO;
 import com.alkemy.disney.alkemylab.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

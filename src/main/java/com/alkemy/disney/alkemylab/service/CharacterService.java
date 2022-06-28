@@ -1,11 +1,7 @@
 package com.alkemy.disney.alkemylab.service;
 
-import com.alkemy.disney.alkemylab.dto.CharacterDTO;
-import com.alkemy.disney.alkemylab.entity.MovieEntity;
-import org.springframework.stereotype.Service;
-
+import com.alkemy.disney.alkemylab.dto.character.CharacterDTO;
 import java.util.List;
-import java.util.Set;
 
 public interface CharacterService {
 
