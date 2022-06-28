@@ -1,6 +1,7 @@
 package com.alkemy.disney.alkemylab.service;
 
-import com.alkemy.disney.alkemylab.dto.GenreDTO;
+
+import com.alkemy.disney.alkemylab.dto.genre.GenreDTO;
 
 import java.util.List;
 

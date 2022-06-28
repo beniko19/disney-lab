@@ -1,6 +1,7 @@
 package com.alkemy.disney.alkemylab.service;
 
-import com.alkemy.disney.alkemylab.dto.MovieDTO;
+
+import com.alkemy.disney.alkemylab.dto.movie.MovieDTO;
 
 import java.util.List;
 
