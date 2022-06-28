@@ -1,20 +1,21 @@
 package com.alkemy.disney.alkemylab.service.impl;
 
-import com.alkemy.disney.alkemylab.dto.CharacterDTO;
-import com.alkemy.disney.alkemylab.dto.CharacterFiltersDTO;
+import com.alkemy.disney.alkemylab.dto.character.CharacterDTO;
+import com.alkemy.disney.alkemylab.dto.character.CharacterFiltersDTO;
+import com.alkemy.disney.alkemylab.dto.movie.MovieBasicDTO;
 import com.alkemy.disney.alkemylab.entity.CharacterEntity;
-import com.alkemy.disney.alkemylab.entity.MovieCharacterEntity;
+import com.alkemy.disney.alkemylab.entity.MovieEntity;
 import com.alkemy.disney.alkemylab.exception.ParamNotFound;
 import com.alkemy.disney.alkemylab.mapper.CharacterMapper;
-import com.alkemy.disney.alkemylab.mapper.MovieMapper;
 import com.alkemy.disney.alkemylab.repository.CharacterRepository;
-import com.alkemy.disney.alkemylab.repository.MovieCharacterRepository;
+import com.alkemy.disney.alkemylab.repository.MovieRepository;
 import com.alkemy.disney.alkemylab.repository.specification.CharacterSpecification;
 import com.alkemy.disney.alkemylab.service.CharacterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,25 +26,34 @@ public class CharacterServiceImpl implements CharacterService {
     @Autowired
     private CharacterRepository characterRepository;
     @Autowired
-    private MovieCharacterRepository movieCharacterRepository;
+    private MovieRepository movieRepository;
     @Autowired
     private CharacterSpecification characterSpecification;
-    @Autowired
-    private MovieMapper movieMapper;
 
     public CharacterDTO save(CharacterDTO dto) {
         CharacterEntity entity = characterMapper.characterDTO2Entity(dto);
+        verifyAndAddMovies(dto, entity);
         CharacterEntity entitySaved = characterRepository.save(entity);
         CharacterDTO result = characterMapper.characterEntity2DTO(entitySaved);
-        if (dto.getMovies() != null)
-            addMovies(dto, result);
         return result;
+    }
+
+    private void verifyAndAddMovies(CharacterDTO dto, CharacterEntity entity) {
+        List<MovieEntity> movies2Add2Genre = new ArrayList<>();
+        if (dto.getMovies() != null) {
+            List<MovieBasicDTO> moviesFromDTO = dto.getMovies();
+            moviesFromDTO.stream().forEach(m -> {
+                Optional<MovieEntity> movie = movieRepository.findById(m.getId());
+                if (movie.isPresent())
+                    movies2Add2Genre.add(movie.get());
+            });
+        }
+        entity.setMovies(movies2Add2Genre);
     }
 
     public List<CharacterDTO> getAllCharacters() {
         List<CharacterEntity> entities = characterRepository.findAll();
         List<CharacterDTO> result = characterMapper.characterEntity2DTOList(entities);
-        result.forEach(this::loadMovies);
         return result;
     }
 
@@ -52,15 +62,13 @@ public class CharacterServiceImpl implements CharacterService {
         if (!entity.isPresent())
             throw new ParamNotFound("Invalid character id");
         CharacterDTO result = characterMapper.characterEntity2DTO(entity.get());
-        loadMovies(result);
         return result;
     }
 
-    public List<CharacterDTO> getByFilters(String name, Integer age, Integer weight, String movieName, String order) {
-        CharacterFiltersDTO filtersDTO = new CharacterFiltersDTO(name, age, weight, movieName, order);
+    public List<CharacterDTO> getByFilters(String name, Integer age, Integer weight, List<Long> movieId, String order) {
+        CharacterFiltersDTO filtersDTO = new CharacterFiltersDTO(name, age, weight, movieId, order);
         List<CharacterEntity> entities = characterRepository.findAll(characterSpecification.getByFilters(filtersDTO));
-        List<CharacterDTO> dtos = characterMapper.characterEntitySet2DTOList(entities);
-        dtos.forEach(this::loadMovies);
+        List<CharacterDTO> dtos = characterMapper.characterEntity2DTOList(entities);
         return dtos;
     }
 
@@ -70,9 +78,6 @@ public class CharacterServiceImpl implements CharacterService {
         if (!entity.isPresent()  )
             throw new ParamNotFound("Invalid character id");
         characterRepository.deleteByIdCharacter(id);
-        Optional<MovieCharacterEntity> movieCharacterEntity = movieCharacterRepository.findByCharacterId(id);
-        if (movieCharacterEntity.isPresent())
-            movieCharacterRepository.deleteCharacter(id);
     }
 
     public CharacterDTO update(Long id, CharacterDTO character) {
@@ -87,22 +92,6 @@ public class CharacterServiceImpl implements CharacterService {
         entity.get().setWeight(updatedCharacter.getWeight());
         characterRepository.save(entity.get());
         CharacterDTO result = characterMapper.characterEntity2DTO(characterRepository.getReferenceById(id));
-        loadMovies(result);
         return result;
-    }
-
-    private void addMovies(CharacterDTO dto, CharacterDTO result) {
-        result.setMovies(dto.getMovies());
-        dto.getMovies().forEach(movie -> {
-            MovieCharacterEntity movieCharacter = new MovieCharacterEntity();
-            movieCharacter.setMovieId(movie.getId());
-            movieCharacter.setCharacterId(result.getId());
-            movieCharacterRepository.save(movieCharacter);
-        });
-        loadMovies(result);
-    }
-
-    private void loadMovies(CharacterDTO character) {
-        character.setMovies(movieMapper.movieEntity2DTOList(movieCharacterRepository.loadMovies2Character(character.getId())));
     }
 }
