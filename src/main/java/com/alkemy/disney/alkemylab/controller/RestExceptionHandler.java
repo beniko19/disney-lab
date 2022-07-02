@@ -1,7 +1,10 @@
 package com.alkemy.disney.alkemylab.controller;
 
 import com.alkemy.disney.alkemylab.dto.ApiErrorDTO;
+import com.alkemy.disney.alkemylab.exception.EmailAlreadyTaken;
 import com.alkemy.disney.alkemylab.exception.ParamNotFound;
+import com.alkemy.disney.alkemylab.exception.RoleNotFound;
+import com.alkemy.disney.alkemylab.exception.UsernameAlreadyTaken;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,34 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
                 Arrays.asList("Param Not Found")
+        );
+        return handleExceptionInternal(ex, errorDTO, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = {UsernameAlreadyTaken.class})
+    protected ResponseEntity<Object> usernameAlreadyTaken(RuntimeException ex, WebRequest request) {
+        ApiErrorDTO errorDTO = new ApiErrorDTO(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                Arrays.asList("Username already taken")
+        );
+        return handleExceptionInternal(ex, errorDTO, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+    @ExceptionHandler(value = {EmailAlreadyTaken.class})
+    protected ResponseEntity<Object> emailAlreadyTaken(RuntimeException ex, WebRequest request) {
+        ApiErrorDTO errorDTO = new ApiErrorDTO(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                Arrays.asList("Email already taken")
+        );
+        return handleExceptionInternal(ex, errorDTO, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+    @ExceptionHandler(value = {RoleNotFound.class})
+    protected ResponseEntity<Object> roleNotFound(RuntimeException ex, WebRequest request) {
+        ApiErrorDTO errorDTO = new ApiErrorDTO(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                Arrays.asList("Role not found")
         );
         return handleExceptionInternal(ex, errorDTO, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
