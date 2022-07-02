@@ -172,4 +172,4 @@ Project Link: [CHALLENGE BACKEND - Java Spring Boot (API)](https://github.com/gu
 
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://www.linkedin.com/in/martin-gutierrez-024610208/
+[linkedin-url]: www.linkedin.com/in/martGutierrez
