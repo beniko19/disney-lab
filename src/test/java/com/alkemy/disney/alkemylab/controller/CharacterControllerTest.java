@@ -65,6 +65,7 @@ class CharacterControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         assertEquals(content, jsonRequest);
+        verify(characterService).getAllCharacters();
     }
     @Test
     void saveTest() throws Exception {
@@ -90,12 +91,14 @@ class CharacterControllerTest {
                 .andExpect(status().isOk()).andReturn();
         String content = result.getResponse().getContentAsString();
         assertEquals(content, jsonRequest);
+        verify(characterService).getByFilters(any(), any(), any(), any(), any());
     }
     @Test
     void deleteTest() throws Exception {
         doNothing().when(characterService).delete(any());
         mockMvc.perform(delete("/characters/delete/1").with(httpBasic("beniko", "angelbeast")))
                 .andExpect(status().isNoContent());
+        verify(characterService).delete(any());
     }
     @Test
     void updateTest() throws Exception {
@@ -106,6 +109,7 @@ class CharacterControllerTest {
                         .content(jsonRequest).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         assertEquals(content, jsonRequest);
+        verify(characterService).update(any(), any());
     }
     private CharacterDTO crearCharacterDTO(Long id, int age, String img, String name, String backgournd, int weight, List<MovieBasicDTO> movies) {
         CharacterDTO dto = new CharacterDTO();

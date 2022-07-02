@@ -56,6 +56,7 @@ class MovieControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         assertEquals(response, request);
+        verify(movieService).getAllMovies();
     }
 
     @Test
@@ -81,6 +82,7 @@ class MovieControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         assertEquals(jsonRequest, content);
+        verify(movieService).getByFilters(any(), any(), any());
     }
 
     @Test
@@ -114,6 +116,7 @@ class MovieControllerTest {
                         .content(jsonRequest).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         assertEquals(content, jsonRequest);
+        verify(movieService).update(any(), any());
     }
 
     private MovieDTO crearmovieDTO(long id, String image, String tittle, LocalDate creationDate, int rating, List<CharacterBasicDTO> characters, List<GenreBasicDTO> genres) {
