@@ -86,7 +86,6 @@ class CharacterControllerTest {
         String jsonRequest = mapper.writeValueAsString(characterDTOList);
         when(characterService.getByFilters(any(), any(), any(), any(), any())).thenReturn(characterDTOList);
         MvcResult result = mockMvc.perform(get("/characters/filter").with(httpBasic("beniko", "angelbeast"))
-                        .param("Goku", "45")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
         String content = result.getResponse().getContentAsString();
