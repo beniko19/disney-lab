@@ -43,7 +43,7 @@ class CharacterControllerTest {
 
     @Test
     void getCharacterByIdTest() throws Exception {
-        CharacterDTO dto = crearCharacterDTO(1L, 23, "goku.img", "Goku", "the saivor of the universe", 45, null);
+        CharacterDTO dto = createCharacterDTO(1L, 23, "goku.img", "Goku", "the saivor of the universe", 45, null);
         when(characterService.getDetailsById(any())).thenReturn(dto);
         mockMvc.perform(get("/characters/getCharacter/1")
                         .with(httpBasic("beniko", "angelbeast"))
@@ -55,8 +55,8 @@ class CharacterControllerTest {
     }
     @Test
     void getAllTest() throws Exception {
-        CharacterDTO dto1 = crearCharacterDTO(1L, 23, "goku.img", "Goku", "the saivor of the universe", 45, null);
-        CharacterDTO dto2 = crearCharacterDTO(2L, 45, "naruto.img", "Naruto", "A ninja", 47, null);
+        CharacterDTO dto1 = createCharacterDTO(1L, 23, "goku.img", "Goku", "the saivor of the universe", 45, null);
+        CharacterDTO dto2 = createCharacterDTO(2L, 45, "naruto.img", "Naruto", "A ninja", 47, null);
         List<CharacterDTO> dtos = Arrays.asList(dto1, dto2);
         when(characterService.getAllCharacters()).thenReturn(dtos);
         String jsonRequest = mapper.writeValueAsString(dtos);
@@ -69,19 +69,18 @@ class CharacterControllerTest {
     }
     @Test
     void saveTest() throws Exception {
-        CharacterDTO dto = crearCharacterDTO(1L, 23, "goku.img", "Goku", "the saivor of the universe", 45, null);
+        CharacterDTO dto = createCharacterDTO(1L, 23, "goku.img", "Goku", "the saivor of the universe", 45, null);
         String jsonRequest = mapper.writeValueAsString(dto);
         when(characterService.save(any())).thenReturn(dto);
         String content = mockMvc.perform(post("/characters/save/").with(httpBasic("beniko", "angelbeast"))
                         .content(jsonRequest).contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.id").value(1L)).andReturn().getResponse().getContentAsString();
         assertEquals(content, jsonRequest);
         verify(characterService).save(dto);
     }
     @Test
     void filterTest() throws Exception {
-        CharacterDTO dto1 = crearCharacterDTO(1L, 23, "goku.img", "Goku", "The saivor of the universe", 45, null);
+        CharacterDTO dto1 = createCharacterDTO(1L, 23, "goku.img", "Goku", "The saivor of the universe", 45, null);
         List<CharacterDTO> characterDTOList = new ArrayList<>();
         characterDTOList.add(dto1);
         String jsonRequest = mapper.writeValueAsString(characterDTOList);
@@ -102,7 +101,7 @@ class CharacterControllerTest {
     }
     @Test
     void updateTest() throws Exception {
-        CharacterDTO dto1 = crearCharacterDTO(1L, 23, "goku.img", "Goku", "The saivor of the universe", 45, null);
+        CharacterDTO dto1 = createCharacterDTO(1L, 23, "goku.img", "Goku", "The saivor of the universe", 45, null);
         String jsonRequest = mapper.writeValueAsString(dto1);
         when(characterService.update(any(), any())).thenReturn(dto1);
         String content = mockMvc.perform(put("/characters/update/1").with(httpBasic("beniko", "angelbeast"))
@@ -111,7 +110,7 @@ class CharacterControllerTest {
         assertEquals(content, jsonRequest);
         verify(characterService).update(any(), any());
     }
-    private CharacterDTO crearCharacterDTO(Long id, int age, String img, String name, String backgournd, int weight, List<MovieBasicDTO> movies) {
+    private CharacterDTO createCharacterDTO(Long id, int age, String img, String name, String backgournd, int weight, List<MovieBasicDTO> movies) {
         CharacterDTO dto = new CharacterDTO();
         dto.setId(id);
         dto.setAge(age);
